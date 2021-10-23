@@ -45,8 +45,9 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (currentTask != null && !currentTask.isCancelled()) {
+        if (currentTask != null && !currentTask.isDone()) {
             sender.sendMessage("The biome search task is already running.");
+            return true;
         }
 
         int radius = 500;
