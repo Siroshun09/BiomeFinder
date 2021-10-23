@@ -20,7 +20,7 @@ tasks {
     reobfJar {
         outputJar.convention(
             project.layout.buildDirectory
-                .file("libs/${project.name}-${project.version}-mc$mcVersion.jar")
+                .file("libs/BiomeFinder-${project.version}-mc$mcVersion.jar")
         )
     }
 
