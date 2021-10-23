@@ -82,8 +82,8 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         currentTask =
                 CompletableFuture.runAsync(finder, executor)
-                        .thenRunAsync(() -> sendResult(sender, finder, showFoundBiomes))
-                        .thenRunAsync(() -> sender.sendMessage("Done! (" + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + "ms)"));
+                        .thenRunAsync(() -> sendResult(sender, finder, showFoundBiomes), executor)
+                        .thenRunAsync(() -> sender.sendMessage("Done! (" + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + "ms)"), executor);
 
         return true;
     }

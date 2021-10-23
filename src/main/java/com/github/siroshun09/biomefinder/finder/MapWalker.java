@@ -12,7 +12,7 @@ import java.util.Set;
 public final class MapWalker implements BiomeFinder {
 
     private final BiomeSource source;
-    private final Set<Biome> discoveredBiomes;
+    private final Set<Biome> discoveredBiomes = new HashSet<>();
 
     private final int originX;
     private final int y;
@@ -22,7 +22,6 @@ public final class MapWalker implements BiomeFinder {
 
     public MapWalker(@NotNull BiomeSource source, int originX, int y, int originZ, int distance, int radius) {
         this.source = source;
-        this.discoveredBiomes = new HashSet<>(source.possibleBiomes());
         this.originX = originX;
         this.y = y;
         this.originZ = originZ;
