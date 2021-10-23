@@ -1,8 +1,0 @@
-name: BiomeFinder
-main: com.github.siroshun09.biomefinder.BiomeFinderPlugin
-version: ${project.version}
-author: Siroshun09
-api-version: 1.17
-commands:
-  findbiomes:
-    aliases: ["fb"]
