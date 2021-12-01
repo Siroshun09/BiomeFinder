@@ -2,7 +2,7 @@ package com.github.siroshun09.biomefinder.finder;
 
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.Set;
 
 public final class MapWalker implements BiomeFinder {
 
-    private final BiomeSource source;
+    private final ChunkGenerator source;
     private final Set<Biome> discoveredBiomes = new HashSet<>();
 
     private final int originX;
@@ -20,7 +20,7 @@ public final class MapWalker implements BiomeFinder {
     private final int distance;
     private final int radius;
 
-    public MapWalker(@NotNull BiomeSource source, int originX, int y, int originZ, int distance, int radius) {
+    public MapWalker(@NotNull ChunkGenerator source, int originX, int y, int originZ, int distance, int radius) {
         this.source = source;
         this.originX = originX;
         this.y = y;
@@ -53,6 +53,6 @@ public final class MapWalker implements BiomeFinder {
 
     @Override
     public @NotNull Collection<Biome> getPossibleBiomes() {
-        return source.possibleBiomes();
+        return source.getBiomeSource().possibleBiomes();
     }
 }

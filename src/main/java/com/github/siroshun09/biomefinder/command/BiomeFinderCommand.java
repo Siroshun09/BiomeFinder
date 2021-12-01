@@ -74,7 +74,7 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         var loc = player.getLocation();
         var finder = new MapWalker(
-                BiomeSources.getOverworldSource(player.getWorld().getSeed(), false), // TODO: large biomes
+                BiomeSources.getNoiseBasedChunkGenerator(player.getWorld().getSeed(), false), // TODO: large biomes
                 loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), 16, radius
         );
 
@@ -112,7 +112,7 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(
                 biomes.stream()
-                        .map(BiomeSources.getRegistry()::getKey)
+                        .map(BiomeSources.getBiomeRegistry()::getKey)
                         .map(Optional::ofNullable)
                         .map(optional -> optional.map(ResourceLocation::toString))
                         .map(optional -> optional.orElse("unknown_biome_name"))
