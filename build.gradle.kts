@@ -2,6 +2,7 @@ plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "1.3.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.0"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = "com.github.siroshun09.biomefinder"
@@ -14,8 +15,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
+    implementation("com.github.siroshun09.translationloader:translationloader:1.2.0")
 }
 
 tasks {
@@ -28,6 +34,7 @@ tasks {
 
     build {
         dependsOn(reobfJar)
+        dependsOn(shadowJar)
     }
 
     compileJava {
@@ -37,6 +44,11 @@ tasks {
 
     processResources {
         filteringCharset = Charsets.UTF_8.name()
+    }
+
+    shadowJar {
+        minimize()
+        relocate("com.github.siroshun09.translationloader", "com.github.siroshun09.biomefinder.libs.translationloader")
     }
 }
 
