@@ -13,18 +13,19 @@ import org.jetbrains.annotations.NotNull;
 
 public final class BiomeSources {
 
-    public static @NotNull NoiseBasedChunkGenerator getNoiseBasedChunkGenerator(long seed, boolean large) {
+    public static @NotNull NoiseBasedChunkGenerator getNoiseBasedChunkGenerator(long seed, @NotNull Dimension dimension, boolean large) {
+        var preset = dimension == Dimension.OVERWORLD ? MultiNoiseBiomeSource.Preset.OVERWORLD : MultiNoiseBiomeSource.Preset.NETHER;
         return new NoiseBasedChunkGenerator(
                 getNoiseParametersRegistry(),
-                MultiNoiseBiomeSource.Preset.OVERWORLD.biomeSource(getBiomeRegistry(), true),
-                seed,
-                () -> getNoiseGeneratorSettingsSupplier(large)
+                preset.biomeSource(getBiomeRegistry(), true),
+                seed, () -> getNoiseGeneratorSettingsSupplier(large)
         );
     }
 
     public static @NotNull Registry<Biome> getBiomeRegistry() {
         return getRegistryHolder().registryOrThrow(Registry.BIOME_REGISTRY);
     }
+
 
     private static @NotNull Registry<NormalNoise.NoiseParameters> getNoiseParametersRegistry() {
         return getRegistryHolder().registryOrThrow(Registry.NOISE_REGISTRY);
@@ -37,5 +38,9 @@ public final class BiomeSources {
 
     private static @NotNull RegistryAccess.RegistryHolder getRegistryHolder() {
         return ((CraftServer) Bukkit.getServer()).getServer().registryHolder;
+    }
+
+    public enum Dimension {
+        OVERWORLD, NETHER
     }
 }
