@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
-    implementation("com.github.siroshun09.translationloader:translationloader:1.2.0")
+    implementation("com.github.siroshun09.translationloader:translationloader:2.0.0")
 }
 
 tasks {
