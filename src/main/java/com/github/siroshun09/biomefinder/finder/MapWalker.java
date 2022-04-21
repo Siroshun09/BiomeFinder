@@ -1,5 +1,6 @@
 package com.github.siroshun09.biomefinder.finder;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -40,7 +41,7 @@ public final class MapWalker implements BiomeFinder {
 
         for (int x = minX; x < maxX; x += distance) {
             for (int z = minZ; z < maxZ; z += distance) {
-                var biome = source.getNoiseBiome(QuartPos.fromBlock(x), biomeY, QuartPos.fromBlock(z));
+                var biome = source.getNoiseBiome(QuartPos.fromBlock(x), biomeY, QuartPos.fromBlock(z)).value();
                 discoveredBiomes.add(biome);
             }
         }
@@ -53,6 +54,6 @@ public final class MapWalker implements BiomeFinder {
 
     @Override
     public @NotNull Collection<Biome> getPossibleBiomes() {
-        return source.getBiomeSource().possibleBiomes();
+        return source.getBiomeSource().possibleBiomes().stream().map(Holder::value).toList();
     }
 }
