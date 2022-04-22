@@ -26,9 +26,11 @@ dependencies {
 
 tasks {
     reobfJar {
-        outputJar.convention(
+        outputJar.set(
             project.layout.buildDirectory
-                .file("libs/BiomeFinder-${fullVersion}.jar")
+                .dir("libs")
+                .get()
+                .file("BiomeFinder-${fullVersion}.jar")
         )
     }
 
