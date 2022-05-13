@@ -36,6 +36,7 @@ public final class CommandMessages {
                     .append(argument("-z", "--center-z", "<z>", "Sets the center z"))
                     .append(argument("-cw", "--current-world", "", "Searching this world (player only)"))
                     .append(argument("-w", "--world", "<world name>", "Searching specified world"))
+                    .append(argument("-sdb", "--show-discovered-biomes", "<true/false>", "Shows found or not found biomes"))
                     .append(newline())
                     .append(gray("Example 1: ").append(aqua("/fb -s 1234 -r 1000")))
                     .append(newline())
