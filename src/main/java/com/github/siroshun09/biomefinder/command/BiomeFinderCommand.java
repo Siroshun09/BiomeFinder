@@ -4,7 +4,7 @@ import com.github.siroshun09.biomefinder.finder.BiomeFinder;
 import com.github.siroshun09.biomefinder.finder.MapWalker;
 import com.github.siroshun09.biomefinder.util.BiomeSources;
 import com.google.common.base.Stopwatch;
-import net.minecraft.resources.ResourceLocation;
+import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -25,13 +25,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
+import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOME_LIST;
+import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOME_LIST_HEADER;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.BIOME_LIST;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.COMMAND_CONTEXT;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.DISCOVERED_BIOMES;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_ALREADY_RUNNING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_NO_PERMISSION;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.FINISH_SEARCHING;
+import static com.github.siroshun09.biomefinder.message.CommandMessages.FOUND_BIOME;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.HELP;
+import static com.github.siroshun09.biomefinder.message.CommandMessages.NOT_FOUND_BIOME;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.START_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.UNDISCOVERED_BIOMES;
 
@@ -78,7 +82,7 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         currentTask =
                 CompletableFuture.runAsync(finder, executor)
-                        .thenRunAsync(() -> sendResult(sender, finder, context.showDiscoveredBiomes()), executor)
+                        .thenRunAsync(() -> sendResult(sender, finder, context.showAllBiomes(), context.showDiscoveredBiomes()), executor)
                         .thenRunAsync(() -> sender.sendMessage(FINISH_SEARCHING.apply(stopwatch)), executor);
 
         return true;
@@ -89,7 +93,30 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
         return Collections.emptyList();
     }
 
-    private void sendResult(@NotNull CommandSender sender, @NotNull BiomeFinder finder, boolean showFoundBiomes) {
+    private void sendResult(@NotNull CommandSender sender, @NotNull BiomeFinder finder,
+                            boolean showAllBiomes, boolean showFoundBiomes) {
+        if (showAllBiomes) {
+            var components = new ArrayList<Component>();
+
+            for (var biome : finder.getPossibleBiomes()) {
+                var biomeKey = toBiomeKey(biome);
+
+                if (biomeKey == null) {
+                    continue;
+                }
+
+                if (finder.getFoundBiomes().contains(biome)) {
+                    components.add(FOUND_BIOME.apply(biomeKey));
+                } else {
+                    components.add(NOT_FOUND_BIOME.apply(biomeKey));
+                }
+            }
+
+            sender.sendMessage(ALL_BIOME_LIST_HEADER);
+            sender.sendMessage(ALL_BIOME_LIST.apply(components));
+            return;
+        }
+
         Collection<Biome> biomes;
 
         if (showFoundBiomes) {
@@ -108,12 +135,17 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         var biomeKeys =
                 biomes.stream()
-                        .map(BiomeSources.getBiomeRegistry()::getKey)
+                        .map(this::toBiomeKey)
                         .filter(Objects::nonNull)
-                        .map(ResourceLocation::toString)
                         .collect(Collectors.toList());
 
         sender.sendMessage(BIOME_LIST.apply(biomeKeys));
+    }
+
+    private @Nullable String toBiomeKey(@NotNull Biome biome) {
+        var resourceLocation = BiomeSources.getBiomeRegistry().getKey(biome);
+
+        return resourceLocation != null ? resourceLocation.toString() : null;
     }
 
     private @NotNull CommandContext parseArgument(@NotNull CommandSender sender, @NotNull String[] args) {
@@ -122,6 +154,7 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
         boolean large = false;
         int radius = 500;
         Integer centerX = null, centerZ = null;
+        boolean showAllBiomes = false;
         boolean showDiscoveredBiomes = true;
 
         ArgumentType argumentType = null;
@@ -139,6 +172,10 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
                             case "-r", "--radius" -> ArgumentType.RADIUS;
                             case "-x", "--center-x" -> ArgumentType.X;
                             case "-z", "--center-z" -> ArgumentType.Z;
+                            case "-sab", "--show-all-biomes" -> {
+                                showAllBiomes = true;
+                                yield null;
+                            }
                             case "-sdb", "--show-discovered-biomes" -> ArgumentType.SHOW_DISCOVERED_BIOMES;
                             case "-cw", "--current-world" -> {
                                 if (sender instanceof Player player) {
@@ -202,7 +239,11 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
             }
         }
 
-        return new CommandContext(seed, dimension, large, Math.abs(radius), centerX, centerZ, showDiscoveredBiomes);
+        return new CommandContext(
+                seed, dimension, large,
+                Math.abs(radius), centerX, centerZ,
+                showAllBiomes, showDiscoveredBiomes
+        );
     }
 
     private int parseInt(@NotNull String original, int def) {

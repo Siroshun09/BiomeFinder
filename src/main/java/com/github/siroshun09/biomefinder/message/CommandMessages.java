@@ -5,7 +5,8 @@ import com.github.siroshun09.translationloader.argument.SingleArgument;
 import com.google.common.base.Stopwatch;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
 import static net.kyori.adventure.text.format.NamedTextColor.AQUA;
 import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
+import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public final class CommandMessages {
 
@@ -36,6 +38,7 @@ public final class CommandMessages {
                     .append(argument("-z", "--center-z", "<z>", "Sets the center z"))
                     .append(argument("-cw", "--current-world", "", "Searching this world (player only)"))
                     .append(argument("-w", "--world", "<world name>", "Searching specified world"))
+                    .append(argument("-sab", "--show-all-biomes", "", "Shows all biomes"))
                     .append(argument("-sdb", "--show-discovered-biomes", "<true/false>", "Shows found or not found biomes"))
                     .append(newline())
                     .append(gray("Example 1: ").append(aqua("/fb -s 1234 -r 1000")))
@@ -85,13 +88,27 @@ public final class CommandMessages {
             biomeKeys -> {
                 var components =
                         biomeKeys.stream()
-                                .map(CommandMessages::translatableAqua)
-                                .toArray(TranslatableComponent[]::new);
+                                .map(biomeKey -> biome(biomeKey, AQUA)) // replace to correct key
+                                .toArray(Component[]::new);
 
                 var separator = gray(", ");
 
                 return join(JoinConfiguration.separator(separator), components);
             };
+
+    public static final Component ALL_BIOME_LIST_HEADER =
+            gray("Result: (")
+                    .append(aqua("found"))
+                    .append(gray(" / "))
+                    .append(red("not found"))
+                    .append(gray(")"));
+
+    public static final SingleArgument<List<Component>> ALL_BIOME_LIST =
+            biomes -> join(JoinConfiguration.separator(gray(", ")), biomes);
+
+    public static final SingleArgument<String> FOUND_BIOME = biomeKey -> biome(biomeKey, AQUA);
+
+    public static final SingleArgument<String> NOT_FOUND_BIOME = biomeKey -> biome(biomeKey, RED);
 
     private static @NotNull Component argument(@NotNull String shortArg, @NotNull String arg,
                                                @NotNull String value, @NotNull String description) {
@@ -129,8 +146,13 @@ public final class CommandMessages {
         return text(bool, AQUA);
     }
 
-    private static @NotNull TranslatableComponent translatableAqua(@NotNull String key) {
-        return translatable(key, AQUA);
+    private static @NotNull String toBiomeTranslationKey(@NotNull String biomeKey) {
+        return "biome." + biomeKey.replace(':', '.');
+    }
+
+    private static @NotNull Component biome(@NotNull String biomeKey, @NotNull TextColor color) {
+        return translatable(toBiomeTranslationKey(biomeKey), color)
+                .hoverEvent(HoverEvent.showText(text(biomeKey, WHITE)));
     }
 
     private CommandMessages() {
