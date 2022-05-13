@@ -238,19 +238,11 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
         }
 
         if (centerX == null) {
-            if (sender instanceof Player player) {
-                centerX = player.getLocation().getBlockX();
-            } else {
-                centerX = 0;
-            }
+            centerX = 0;
         }
 
         if (centerZ == null) {
-            if (sender instanceof Player player) {
-                centerZ = player.getLocation().getBlockZ();
-            } else {
-                centerZ = 0;
-            }
+            centerZ = 0;
         }
 
         return new CommandContext(
