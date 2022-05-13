@@ -189,8 +189,14 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
                                 if (sender instanceof Player player) {
                                     var world = player.getWorld();
                                     seed = world.getSeed();
-                                    centerX = world.getSpawnLocation().getBlockX();
-                                    centerZ = world.getSpawnLocation().getBlockZ();
+
+                                    if (centerX == null) {
+                                        centerX = world.getSpawnLocation().getBlockX();
+                                    }
+
+                                    if (centerZ == null) {
+                                        centerZ = world.getSpawnLocation().getBlockZ();
+                                    }
                                 }
 
                                 yield null;
