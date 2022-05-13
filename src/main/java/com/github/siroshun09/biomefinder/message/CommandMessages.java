@@ -36,6 +36,7 @@ public final class CommandMessages {
                     .append(argument("-r", "--radius", "<radius>", "Sets the radius"))
                     .append(argument("-x", "--center-x", "<x>", "Sets the center x"))
                     .append(argument("-z", "--center-z", "<z>", "Sets the center z"))
+                    .append(argument("-cl", "--current-location", "", "Sets the center x and z to the current location (player only)"))
                     .append(argument("-cw", "--current-world", "", "Searching this world (player only)"))
                     .append(argument("-w", "--world", "<world name>", "Searching specified world"))
                     .append(argument("-sab", "--show-all-biomes", "", "Shows all biomes"))

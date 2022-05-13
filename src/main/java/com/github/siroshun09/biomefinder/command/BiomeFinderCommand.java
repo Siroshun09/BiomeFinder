@@ -177,6 +177,14 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
                                 yield null;
                             }
                             case "-sdb", "--show-discovered-biomes" -> ArgumentType.SHOW_DISCOVERED_BIOMES;
+                            case "-cl", "--current-location" -> {
+                                if (sender instanceof Player player) {
+                                    centerX = player.getLocation().getBlockX();
+                                    centerZ = player.getLocation().getBlockZ();
+                                }
+
+                                yield null;
+                            }
                             case "-cw", "--current-world" -> {
                                 if (sender instanceof Player player) {
                                     var world = player.getWorld();
