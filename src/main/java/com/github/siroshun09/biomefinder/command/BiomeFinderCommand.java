@@ -2,9 +2,10 @@ package com.github.siroshun09.biomefinder.command;
 
 import com.github.siroshun09.biomefinder.finder.BiomeFinder;
 import com.github.siroshun09.biomefinder.finder.MapWalker;
-import com.github.siroshun09.biomefinder.util.BiomeSources;
+import com.github.siroshun09.biomefinder.util.NMSUtils;
 import com.google.common.base.Stopwatch;
 import net.kyori.adventure.text.Component;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -74,8 +75,8 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(START_SEARCHING);
 
         var finder = new MapWalker(
-                BiomeSources.getNoiseBasedChunkGenerator(context.seed(), context.dimension(), context.large()),
-                context.centerX(), 64, context.centerZ(), 16, context.radius()
+                NMSUtils.getChunkGenerator(context.seed(), context.dimension(), context.large()),
+                context.centerX(), 64, context.centerZ(), 16, context.radius(), context.seed()
         );
 
         var stopwatch = Stopwatch.createStarted();
@@ -143,14 +144,14 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
     }
 
     private @Nullable String toBiomeKey(@NotNull Biome biome) {
-        var resourceLocation = BiomeSources.getBiomeRegistry().getKey(biome);
+        var resourceLocation = BuiltinRegistries.BIOME.getKey(biome);
 
         return resourceLocation != null ? resourceLocation.toString() : null;
     }
 
     private @NotNull CommandContext parseArgument(@NotNull CommandSender sender, @NotNull String[] args) {
         Long seed = null;
-        BiomeSources.Dimension dimension = BiomeSources.Dimension.OVERWORLD;
+        NMSUtils.Dimension dimension = NMSUtils.Dimension.OVERWORLD;
         boolean large = false;
         int radius = 500;
         Integer centerX = null, centerZ = null;
@@ -209,9 +210,9 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
                     case SEED -> seed = parseToSeed(arg);
                     case DIMENSION -> {
                         if (arg.equalsIgnoreCase("overworld")) {
-                            dimension = BiomeSources.Dimension.OVERWORLD;
+                            dimension = NMSUtils.Dimension.OVERWORLD;
                         } else if (arg.equalsIgnoreCase("nether")) {
-                            dimension = BiomeSources.Dimension.NETHER;
+                            dimension = NMSUtils.Dimension.NETHER;
                         }
                     }
                     case RADIUS -> radius = parseInt(arg, 500);
