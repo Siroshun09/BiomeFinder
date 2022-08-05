@@ -58,7 +58,7 @@ bukkit {
     name = "BiomeFinder"
     main = "com.github.siroshun09.biomefinder.BiomeFinderPlugin"
     version = fullVersion
-    apiVersion = "1.18"
+    apiVersion = "1.19"
     author = "Siroshun09"
     commands {
         register("findbiomes") {
