@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.siroshun09.biomefinder"
-version = "1.4"
+version = "1.5-SNAPSHOT"
 val mcVersion = "1.19.2"
 val fullVersion = "${version}-mc${mcVersion}"
 
