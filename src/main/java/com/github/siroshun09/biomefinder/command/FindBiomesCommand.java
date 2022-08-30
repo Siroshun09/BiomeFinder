@@ -9,9 +9,7 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOME_LIST;
@@ -31,40 +29,22 @@ import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOM
 import static com.github.siroshun09.biomefinder.message.CommandMessages.BIOME_LIST;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.COMMAND_CONTEXT;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.DISCOVERED_BIOMES;
-import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_ALREADY_RUNNING;
-import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_NO_PERMISSION;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.FINISH_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.FOUND_BIOME;
-import static com.github.siroshun09.biomefinder.message.CommandMessages.HELP;
+import static com.github.siroshun09.biomefinder.message.CommandMessages.FIND_BIOMES_HELP;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.NOT_FOUND_BIOME;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.START_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.UNDISCOVERED_BIOMES;
 
-public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
+public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
-    private static final String PERMISSION = "biomefinder.command";
-
-    private final ExecutorService executor;
-    private CompletableFuture<?> currentTask;
-
-    public BiomeFinderCommand(@NotNull ExecutorService executor) {
-        this.executor = executor;
+    public FindBiomesCommand(@NotNull Executor executor) {
+        super("biomefinder.command.findbiomes", executor);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!sender.hasPermission(PERMISSION)) {
-            sender.sendMessage(ERROR_NO_PERMISSION.apply(PERMISSION));
-            return true;
-        }
-
-        if (0 < args.length && args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage(HELP);
-            return true;
-        }
-
-        if (currentTask != null && !currentTask.isDone()) {
-            sender.sendMessage(ERROR_ALREADY_RUNNING);
+        if (!preProcess(sender, args, FIND_BIOMES_HELP)) {
             return true;
         }
 
@@ -81,10 +61,13 @@ public class BiomeFinderCommand implements CommandExecutor, TabCompleter {
 
         var stopwatch = Stopwatch.createStarted();
 
-        currentTask =
+        var executor = getExecutor();
+        setCurrentTask(
                 CompletableFuture.runAsync(finder, executor)
                         .thenRunAsync(() -> sendResult(sender, finder, context.showAllBiomes(), context.showDiscoveredBiomes()), executor)
-                        .thenRunAsync(() -> sender.sendMessage(FINISH_SEARCHING.apply(stopwatch)), executor);
+                        .thenRunAsync(() -> sender.sendMessage(FINISH_SEARCHING.apply(stopwatch)), executor)
+                        .thenRunAsync(() -> setCurrentTask(null))
+        );
 
         return true;
     }

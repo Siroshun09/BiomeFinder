@@ -26,7 +26,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
 public final class CommandMessages {
 
-    public static final Component HELP =
+    public static final Component FIND_BIOMES_HELP =
             text().append(aqua("/findbiomes {arguments}")).append(newline())
                     .append(newline())
                     .append(gray("Arguments:")).append(newline())

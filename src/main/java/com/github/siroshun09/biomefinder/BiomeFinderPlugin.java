@@ -1,7 +1,9 @@
 package com.github.siroshun09.biomefinder;
 
-import com.github.siroshun09.biomefinder.command.BiomeFinderCommand;
+import com.github.siroshun09.biomefinder.command.AbstractBiomeFinderCommand;
+import com.github.siroshun09.biomefinder.command.FindBiomesCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -13,15 +15,17 @@ public class BiomeFinderPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        var pluginCommand = Optional.ofNullable(getCommand("findbiomes")).orElseThrow();
-        var command = new BiomeFinderCommand(executor);
-
-        pluginCommand.setExecutor(command);
-        pluginCommand.setTabCompleter(command);
+        registerCommand(new FindBiomesCommand(executor), "findbiomes");
     }
 
     @Override
     public void onDisable() {
         executor.shutdownNow();
+    }
+
+    private void registerCommand(@NotNull AbstractBiomeFinderCommand commandImpl, @NotNull String commandName) {
+        var pluginCommand = Optional.ofNullable(getCommand(commandName)).orElseThrow();
+        pluginCommand.setExecutor(commandImpl);
+        pluginCommand.setTabCompleter(commandImpl);
     }
 }
