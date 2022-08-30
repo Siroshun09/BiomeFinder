@@ -64,5 +64,8 @@ bukkit {
         register("findbiomes") {
             aliases = listOf("fb")
         }
+        register("generateseed") {
+            aliases = listOf("gs")
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.github.siroshun09.biomefinder;
 
 import com.github.siroshun09.biomefinder.command.AbstractBiomeFinderCommand;
 import com.github.siroshun09.biomefinder.command.FindBiomesCommand;
+import com.github.siroshun09.biomefinder.command.GenerateSeedCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +17,7 @@ public class BiomeFinderPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         registerCommand(new FindBiomesCommand(executor), "findbiomes");
+        registerCommand(new GenerateSeedCommand(executor), "generateseed");
     }
 
     @Override
