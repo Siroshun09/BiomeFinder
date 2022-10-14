@@ -61,7 +61,7 @@ public final class CommandMessages {
 
     public static final SingleArgument<CommandContext> COMMAND_CONTEXT =
             context ->
-                    text().append(gray("Seed: ").append(aqua(context.seed()).clickEvent(copyToClipboard(Long.toString(context.seed())))))
+                    text().append(gray("Seed: ").append(seed(context.seed())))
                             .append(newline())
                             .append(gray("Dimension: ").append(aqua(context.dimension().name().toLowerCase(Locale.ENGLISH))))
                             .append(newline())
@@ -120,7 +120,7 @@ public final class CommandMessages {
             spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome));
 
     public static final SingleArgument<Long> GENERATED_SEED =
-            seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(text(seed, AQUA).clickEvent(copyToClipboard(Long.toString(seed))));
+            seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(seed(seed));
 
     public static final Component SEED_NOT_FOUND = red("The seed is not found. Try again or change the spawn biome.");
 
@@ -160,18 +160,28 @@ public final class CommandMessages {
         return text(bool, AQUA);
     }
 
+    private static @NotNull Component white(@NotNull String str) {
+        return text(str, WHITE);
+    }
+
     private static @NotNull String toBiomeTranslationKey(@NotNull String biomeKey) {
         return "biome." + biomeKey.replace(':', '.');
     }
 
     private static @NotNull Component biome(@NotNull String biomeKey, @NotNull TextColor color) {
         return translatable(toBiomeTranslationKey(biomeKey), color)
-                .hoverEvent(HoverEvent.showText(text(biomeKey, WHITE)));
+                .hoverEvent(HoverEvent.showText(white(biomeKey)));
     }
 
     private static @NotNull Component biome(@NotNull Biome biome) {
         return translatable(biome.translationKey(), AQUA)
-                .hoverEvent(HoverEvent.showText(text(biome.getKey().asString(), WHITE)));
+                .hoverEvent(HoverEvent.showText(white(biome.getKey().asString())));
+    }
+
+    private static @NotNull Component seed(long seed) {
+        return aqua(seed)
+                .clickEvent(copyToClipboard(Long.toString(seed)))
+                .hoverEvent(HoverEvent.showText(white("Click to copy")));
     }
 
     private CommandMessages() {
