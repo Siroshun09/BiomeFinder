@@ -117,10 +117,10 @@ public final class CommandMessages {
     public static final SingleArgument<String> INVALID_BIOME = invalid -> red("Invalid biome: ").append(aqua(invalid));
 
     public static final SingleArgument<Biome> START_GENERATING_SEED =
-            spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome, AQUA));
+            spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome));
 
     public static final SingleArgument<Long> GENERATED_SEED =
-            seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(text(seed).clickEvent(copyToClipboard(Long.toString(seed))));
+            seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(text(seed, AQUA).clickEvent(copyToClipboard(Long.toString(seed))));
 
     public static final Component SEED_NOT_FOUND = red("The seed is not found. Try again or change the spawn biome.");
 
@@ -169,9 +169,9 @@ public final class CommandMessages {
                 .hoverEvent(HoverEvent.showText(text(biomeKey, WHITE)));
     }
 
-    private static @NotNull Component biome(@NotNull Biome biome, @NotNull TextColor color) {
-        return translatable(biome, color)
-                .hoverEvent(HoverEvent.showText(text(biome.translationKey(), WHITE)));
+    private static @NotNull Component biome(@NotNull Biome biome) {
+        return translatable(biome.translationKey(), AQUA)
+                .hoverEvent(HoverEvent.showText(text(biome.getKey().asString(), WHITE)));
     }
 
     private CommandMessages() {
