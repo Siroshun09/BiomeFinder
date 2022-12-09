@@ -5,7 +5,6 @@ import com.github.siroshun09.biomefinder.finder.MapWalker;
 import com.github.siroshun09.biomefinder.util.NMSUtils;
 import com.google.common.base.Stopwatch;
 import net.kyori.adventure.text.Component;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -29,9 +28,9 @@ import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOM
 import static com.github.siroshun09.biomefinder.message.CommandMessages.BIOME_LIST;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.COMMAND_CONTEXT;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.DISCOVERED_BIOMES;
+import static com.github.siroshun09.biomefinder.message.CommandMessages.FIND_BIOMES_HELP;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.FINISH_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.FOUND_BIOME;
-import static com.github.siroshun09.biomefinder.message.CommandMessages.FIND_BIOMES_HELP;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.NOT_FOUND_BIOME;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.START_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.UNDISCOVERED_BIOMES;
@@ -55,8 +54,10 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         sender.sendMessage(START_SEARCHING);
 
         var finder = new MapWalker(
-                NMSUtils.getChunkGenerator(context.seed(), context.dimension(), context.large()),
-                context.centerX(), 64, context.centerZ(), 16, context.radius(), context.seed()
+                context.dimension(),
+                context.centerX(), 64, context.centerZ(),
+                16, context.radius(),
+                context.seed(), context.large()
         );
 
         var stopwatch = Stopwatch.createStarted();
@@ -83,7 +84,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
             var components = new ArrayList<Component>();
 
             for (var biome : finder.getPossibleBiomes()) {
-                var biomeKey = toBiomeKey(biome);
+                var biomeKey = NMSUtils.toBiomeKey(biome);
 
                 if (biomeKey == null) {
                     continue;
@@ -119,18 +120,13 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
         var biomeKeys =
                 biomes.stream()
-                        .map(this::toBiomeKey)
+                        .map(NMSUtils::toBiomeKey)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
         sender.sendMessage(BIOME_LIST.apply(biomeKeys));
     }
 
-    private @Nullable String toBiomeKey(@NotNull Biome biome) {
-        var resourceLocation = BuiltinRegistries.BIOME.getKey(biome);
-
-        return resourceLocation != null ? resourceLocation.toString() : null;
-    }
 
     private @NotNull CommandContext parseArgument(@NotNull CommandSender sender, @NotNull String[] args) {
         Long seed = null;

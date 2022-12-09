@@ -1,13 +1,13 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.3.8"
+    id("io.papermc.paperweight.userdev") version "1.3.11"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.5"
-val mcVersion = "1.19.2"
+val mcVersion = "1.19.3"
 val fullVersion = "${version}-mc${mcVersion}"
 
 java {

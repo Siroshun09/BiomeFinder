@@ -3,11 +3,7 @@ package com.github.siroshun09.biomefinder.finder;
 import com.github.siroshun09.biomefinder.util.NMSUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +13,6 @@ import java.util.Set;
 
 public final class MapWalker implements BiomeFinder {
 
-    private final ChunkGenerator source;
     private final Set<Biome> discoveredBiomes = new HashSet<>();
 
     private final int originX;
@@ -26,15 +21,19 @@ public final class MapWalker implements BiomeFinder {
     private final int distance;
     private final int radius;
     private final long seed;
+    private final NMSUtils.Dimension dimension;
+    private final boolean large;
 
-    public MapWalker(@NotNull ChunkGenerator source, int originX, int y, int originZ, int distance, int radius, long seed) {
-        this.source = source;
+    public MapWalker(@NotNull NMSUtils.Dimension dimension, int originX, int y, int originZ, int distance, int radius,
+                     long seed, boolean large) {
+        this.dimension = dimension;
         this.originX = originX;
         this.y = y;
         this.originZ = originZ;
         this.distance = distance;
         this.radius = radius;
         this.seed = seed;
+        this.large = large;
     }
 
     @Override
@@ -46,17 +45,12 @@ public final class MapWalker implements BiomeFinder {
 
         int biomeY = QuartPos.fromBlock(y);
 
-        var noiseRegistry = NMSUtils.getRegistryAccess().registryOrThrow(Registry.NOISE_REGISTRY);
-
-        // ChunkMap L427-433
-        var randomState =
-                source instanceof NoiseBasedChunkGenerator noiseBasedChunkGenerator ?
-                        RandomState.create(noiseBasedChunkGenerator.generatorSettings().value(), noiseRegistry, seed) :
-                        RandomState.create(NoiseGeneratorSettings.dummy(), noiseRegistry, seed);
+        var biomeSource = NMSUtils.getBiomeSource(dimension);
+        var randomState = RandomState.create(NMSUtils.getNoiseGeneratorSettings(dimension, large), NMSUtils.getNoiseParameters(), seed);
 
         for (int x = minX; x < maxX; x += distance) {
             for (int z = minZ; z < maxZ; z += distance) {
-                var biome = source.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), biomeY, QuartPos.fromBlock(z), randomState.sampler()).value();
+                var biome = biomeSource.getNoiseBiome(QuartPos.fromBlock(x), biomeY, QuartPos.fromBlock(z), randomState.sampler()).value();
                 discoveredBiomes.add(biome);
             }
         }
@@ -69,6 +63,6 @@ public final class MapWalker implements BiomeFinder {
 
     @Override
     public @NotNull Collection<Biome> getPossibleBiomes() {
-        return source.getBiomeSource().possibleBiomes().stream().map(Holder::value).toList();
+        return NMSUtils.getBiomeSource(dimension).possibleBiomes().stream().map(Holder::value).toList();
     }
 }
