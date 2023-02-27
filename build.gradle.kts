@@ -1,8 +1,8 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.5.1"
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("io.papermc.paperweight.userdev") version "1.5.2"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
+    id("com.github.johnrengelman.shadow") version "8.1.0"
 }
 
 group = "com.github.siroshun09.biomefinder"
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
     implementation("com.github.siroshun09.translationloader:translationloader:2.0.2")
 }
 
