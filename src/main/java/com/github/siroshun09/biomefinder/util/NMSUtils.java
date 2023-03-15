@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSource;
+import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +16,14 @@ import org.jetbrains.annotations.Nullable;
 public final class NMSUtils {
 
     public static @NotNull BiomeSource getBiomeSource(@NotNull Dimension dimension) {
-        if (dimension == Dimension.OVERWORLD) {
-            return MultiNoiseBiomeSource.Preset.OVERWORLD.biomeSource(getRegistryAccess().lookupOrThrow(Registries.BIOME));
-        } else {
-            return MultiNoiseBiomeSource.Preset.NETHER.biomeSource(getRegistryAccess().lookupOrThrow(Registries.BIOME));
-        }
+        return MultiNoiseBiomeSource.createFromPreset(
+                getRegistryAccess().registryOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST)
+                        .getHolderOrThrow(
+                                dimension == Dimension.OVERWORLD ?
+                                        MultiNoiseBiomeSourceParameterLists.OVERWORLD :
+                                        MultiNoiseBiomeSourceParameterLists.NETHER
+                        )
+        );
     }
 
     public static @NotNull NoiseGeneratorSettings getNoiseGeneratorSettings(@NotNull Dimension dimension, boolean large) {

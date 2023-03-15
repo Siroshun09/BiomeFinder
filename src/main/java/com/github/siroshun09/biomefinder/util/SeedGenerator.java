@@ -4,7 +4,7 @@ import net.minecraft.core.QuartPos;
 import net.minecraft.world.level.levelgen.RandomState;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_19_R2.util.CraftNamespacedKey;
+import org.bukkit.craftbukkit.v1_19_R3.util.CraftNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
