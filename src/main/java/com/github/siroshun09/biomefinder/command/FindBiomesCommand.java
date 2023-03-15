@@ -7,6 +7,7 @@ import com.google.common.base.Stopwatch;
 import net.kyori.adventure.text.Component;
 import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -177,6 +178,8 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
                                     if (centerZ == null) {
                                         centerZ = world.getSpawnLocation().getBlockZ();
                                     }
+
+                                    dimension = world.getEnvironment() != World.Environment.NETHER ? NMSUtils.Dimension.OVERWORLD : NMSUtils.Dimension.NETHER;
                                 }
 
                                 yield null;
