@@ -2,7 +2,7 @@ plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "1.5.3"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
-    id("com.github.johnrengelman.shadow") version "8.1.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.github.siroshun09.biomefinder"
