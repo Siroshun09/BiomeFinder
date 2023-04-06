@@ -71,7 +71,6 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length != 1 || !sender.hasPermission(PERMISSION)) {
-            sender.sendMessage(ERROR_NO_PERMISSION.apply(PERMISSION));
             return Collections.emptyList();
         }
 
