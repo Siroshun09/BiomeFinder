@@ -33,7 +33,7 @@ public abstract class AbstractBiomeFinderCommand implements CommandExecutor, Tab
 
         if (0 < args.length && args[0].equalsIgnoreCase("help")) {
             sender.sendMessage(help);
-            return true;
+            return false;
         }
 
         if (currentTask != null && !currentTask.isDone()) {
