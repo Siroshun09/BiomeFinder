@@ -44,7 +44,18 @@ tasks {
         options.release.set(17)
     }
 
+    create("appendFoliaSupported") {
+        dependsOn(generateBukkitPluginDescription)
+
+        doLast {
+            val task = generateBukkitPluginDescription.get()
+            val file = task.outputDirectory.file(task.fileName)
+            file.get().asFile.appendText("folia-supported: true" + System.lineSeparator(), Charsets.UTF_8)
+        }
+    }
+
     processResources {
+        dependsOn("appendFoliaSupported")
         filteringCharset = Charsets.UTF_8.name()
     }
 
