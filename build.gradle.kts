@@ -7,7 +7,7 @@ plugins {
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.7"
-val mcVersion = "1.19.4"
+val mcVersion = "1.20"
 val fullVersion = "${version}-mc${mcVersion}"
 
 java {
@@ -69,7 +69,7 @@ bukkit {
     name = "BiomeFinder"
     main = "com.github.siroshun09.biomefinder.BiomeFinderPlugin"
     version = fullVersion
-    apiVersion = "1.19"
+    apiVersion = "1.20"
     author = "Siroshun09"
     commands {
         register("findbiomes") {
