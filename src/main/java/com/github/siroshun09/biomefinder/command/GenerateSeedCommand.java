@@ -14,7 +14,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.stream.Stream;
 
-import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_NO_PERMISSION;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.GENERATED_SEED;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.GENERATE_SEED_HELP;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.INVALID_BIOME;
