@@ -4,7 +4,7 @@ A Paper plugin to search for biomes included in the range.
 
 ## Requirements
 
-- Paper or its forks 1.18.2
+- Paper or its forks 1.20
 - Java 17
 
 ## Installation
