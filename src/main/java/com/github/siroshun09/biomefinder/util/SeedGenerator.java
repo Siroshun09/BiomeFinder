@@ -1,10 +1,10 @@
 package com.github.siroshun09.biomefinder.util;
 
 import net.minecraft.core.QuartPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.RandomState;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
-import org.bukkit.craftbukkit.v1_20_R2.util.CraftNamespacedKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -23,7 +23,7 @@ public final class SeedGenerator {
         int biomeY = QuartPos.fromBlock(spawnLocation.getBlockY());
         int biomeZ = QuartPos.fromBlock(spawnLocation.getBlockZ());
 
-        var biomeResourceLocation = CraftNamespacedKey.toMinecraft(biome.getKey());
+        var biomeResourceLocation = new ResourceLocation(biome.getKey().getNamespace(), biome.getKey().getKey());
         var biomeSource = NMSUtils.getBiomeSource(NMSUtils.Dimension.OVERWORLD);
         var settings = NMSUtils.getNoiseGeneratorSettings(NMSUtils.Dimension.OVERWORLD, large);
 
