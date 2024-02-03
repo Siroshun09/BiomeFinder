@@ -3,11 +3,11 @@ package com.github.siroshun09.biomefinder.message;
 import com.github.siroshun09.biomefinder.command.CommandContext;
 import com.github.siroshun09.translationloader.argument.SingleArgument;
 import com.google.common.base.Stopwatch;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -116,8 +116,8 @@ public final class CommandMessages {
 
     public static final SingleArgument<String> INVALID_BIOME = invalid -> red("Invalid biome: ").append(aqua(invalid));
 
-    public static final SingleArgument<Biome> START_GENERATING_SEED =
-            spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome));
+    public static final SingleArgument<Key> START_GENERATING_SEED =
+            spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome.asString(), AQUA));
 
     public static final SingleArgument<Long> GENERATED_SEED =
             seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(seed(seed));
@@ -171,11 +171,6 @@ public final class CommandMessages {
     private static @NotNull Component biome(@NotNull String biomeKey, @NotNull TextColor color) {
         return translatable(toBiomeTranslationKey(biomeKey), color)
                 .hoverEvent(HoverEvent.showText(white(biomeKey)));
-    }
-
-    private static @NotNull Component biome(@NotNull Biome biome) {
-        return translatable(biome.translationKey(), AQUA)
-                .hoverEvent(HoverEvent.showText(white(biome.getKey().asString())));
     }
 
     private static @NotNull Component seed(long seed) {

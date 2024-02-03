@@ -1,6 +1,7 @@
 package com.github.siroshun09.biomefinder.command;
 
 import com.github.siroshun09.biomefinder.util.SeedGenerator;
+import net.kyori.adventure.key.Key;
 import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,26 +35,27 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
             return true;
         }
 
-        Biome biome;
+        Key key;
 
         if (args.length != 0) {
-            try {
-                biome = Biome.valueOf(args[0].toUpperCase(Locale.ENGLISH));
-            } catch (IllegalArgumentException e) {
+            if (Key.parseable(args[0])) {
+                //noinspection PatternValidation
+                key = Key.key(args[0]);
+            } else {
                 sender.sendMessage(INVALID_BIOME.apply(args[0]));
                 return true;
             }
         } else {
-            biome = Biome.PLAINS;
+            key = Key.key("minecraft:plains");
         }
 
-        sender.sendMessage(START_GENERATING_SEED.apply(biome));
+        sender.sendMessage(START_GENERATING_SEED.apply(key));
 
 
         var executor = getExecutor();
         setCurrentTask(
                 CompletableFuture
-                        .supplyAsync(() -> SeedGenerator.generateSeedWithFixedSpawnBiome(biome), executor)
+                        .supplyAsync(() -> SeedGenerator.generateSeedWithFixedSpawnBiome(key), executor)
                         .thenAcceptAsync(seed -> {
                             if (seed != -1) {
                                 sender.sendMessage(GENERATED_SEED.apply(seed));
