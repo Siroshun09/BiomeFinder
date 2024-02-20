@@ -56,11 +56,10 @@ public final class SeedGenerator {
         var biomeSource = NMSUtils.getBiomeSource(NMSUtils.Dimension.OVERWORLD);
         var settings = NMSUtils.getNoiseGeneratorSettings(NMSUtils.Dimension.OVERWORLD, large);
 
-        long seed;
         int attempts = 0;
 
         while (attempts < maxAttempts) {
-            seed = random.nextLong();
+            long seed = random.nextLong();
 
             var state = RandomState.create(settings, NMSUtils.getNoiseParameters(), seed);
             var spawnBiome = biomeSource.getNoiseBiome(biomeX, biomeY, biomeZ, state.sampler());
