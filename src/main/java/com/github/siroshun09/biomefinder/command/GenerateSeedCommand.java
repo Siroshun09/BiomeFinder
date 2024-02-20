@@ -12,10 +12,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Stream;
 
 import static com.github.siroshun09.biomefinder.message.CommandMessages.GENERATED_SEED;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.GENERATE_SEED_HELP;
@@ -81,9 +79,10 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
             return Collections.emptyList();
         }
 
-        return Stream.of(Biome.values())
-                .map(Enum::name)
-                .filter(biome -> biome.startsWith(args[0].toUpperCase(Locale.ENGLISH)))
+        return Registry.BIOME.stream()
+                .map(Biome::getKey)
+                .filter(key -> key.asString().startsWith(args[0]) || key.asMinimalString().startsWith(args[0]))
+                .map(Key::asString)
                 .toList();
     }
 }
