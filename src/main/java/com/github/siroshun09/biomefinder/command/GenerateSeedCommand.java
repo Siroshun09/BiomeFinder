@@ -2,6 +2,8 @@ package com.github.siroshun09.biomefinder.command;
 
 import com.github.siroshun09.biomefinder.util.SeedGenerator;
 import net.kyori.adventure.key.Key;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -49,8 +51,12 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
             key = Key.key("minecraft:plains");
         }
 
-        sender.sendMessage(START_GENERATING_SEED.apply(key));
+        if (Registry.BIOME.get(new NamespacedKey(key.namespace(), key.value())) == null) {
+            sender.sendMessage(INVALID_BIOME.apply(key.asString()));
+            return true;
+        }
 
+        sender.sendMessage(START_GENERATING_SEED.apply(key));
 
         var executor = getExecutor();
         setCurrentTask(
