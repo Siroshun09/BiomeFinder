@@ -1,9 +1,29 @@
 package com.github.siroshun09.biomefinder.command;
 
-import com.github.siroshun09.biomefinder.util.NMSUtils;
+import com.github.siroshun09.biomefinder.wrapper.BlockPos;
+import com.github.siroshun09.biomefinder.wrapper.Dimension;
+import com.github.siroshun09.biomefinder.wrapper.biome.BiomeSource;
+import com.github.siroshun09.biomefinder.wrapper.biome.MultiNoiseBiomeSourceWrapper;
+import org.jetbrains.annotations.NotNull;
 
-public record CommandContext(long seed, NMSUtils.Dimension dimension, boolean large,
+public record CommandContext(long seed, Dimension dimension, boolean large,
                              int radius, int centerX, int centerZ,
                              boolean showAllBiomes, boolean showDiscoveredBiomes) {
 
+    public @NotNull BiomeSource createBiomeSource() {
+        return switch (this.dimension) {
+            case OVERWORLD -> {
+                if (this.large) {
+                    yield MultiNoiseBiomeSourceWrapper.largeBiomes(this.seed);
+                } else {
+                    yield MultiNoiseBiomeSourceWrapper.overworld(this.seed);
+                }
+            }
+            case NETHER -> MultiNoiseBiomeSourceWrapper.nether(this.seed);
+        };
+    }
+
+    public @NotNull BlockPos center() {
+        return new BlockPos(this.centerX, 64, this.centerZ);
+    }
 }

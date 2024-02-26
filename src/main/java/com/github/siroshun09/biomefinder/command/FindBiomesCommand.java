@@ -1,28 +1,27 @@
 package com.github.siroshun09.biomefinder.command;
 
-import com.github.siroshun09.biomefinder.finder.BiomeFinder;
-import com.github.siroshun09.biomefinder.finder.MapWalker;
-import com.github.siroshun09.biomefinder.util.NMSUtils;
+import com.github.siroshun09.biomefinder.util.MapWalker;
+import com.github.siroshun09.biomefinder.wrapper.Dimension;
+import com.github.siroshun09.biomefinder.wrapper.biome.BiomeSource;
 import com.google.common.base.Stopwatch;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
-import net.minecraft.world.level.biome.Biome;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOME_LIST;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ALL_BIOME_LIST_HEADER;
@@ -52,21 +51,18 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
         sender.sendMessage(COMMAND_CONTEXT.apply(context));
 
-        sender.sendMessage(START_SEARCHING);
+        var biomeSource = context.createBiomeSource();
+        var foundBiomes = new HashSet<Key>();
+        var mapWalker = new MapWalker(biomeSource, (biome, pos) -> foundBiomes.add(biome));
 
-        var finder = new MapWalker(
-                context.dimension(),
-                context.centerX(), 64, context.centerZ(),
-                16, context.radius(),
-                context.seed(), context.large()
-        );
+        sender.sendMessage(START_SEARCHING);
 
         var stopwatch = Stopwatch.createStarted();
 
         var executor = getExecutor();
         setCurrentTask(
-                CompletableFuture.runAsync(finder, executor)
-                        .thenRunAsync(() -> sendResult(sender, finder, context.showAllBiomes(), context.showDiscoveredBiomes()), executor)
+                CompletableFuture.runAsync(() -> mapWalker.walk(context.center(), context.radius(), 16), executor)
+                        .thenRunAsync(() -> sendResult(sender, biomeSource, foundBiomes, context.showAllBiomes(), context.showDiscoveredBiomes()), executor)
                         .thenRunAsync(() -> sender.sendMessage(FINISH_SEARCHING.apply(stopwatch)), executor)
                         .thenRunAsync(() -> setCurrentTask(null))
         );
@@ -79,59 +75,38 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         return Collections.emptyList();
     }
 
-    private void sendResult(@NotNull CommandSender sender, @NotNull BiomeFinder finder,
+    private void sendResult(@NotNull CommandSender sender, @NotNull BiomeSource biomeSource, @NotNull Set<Key> foundBiomes,
                             boolean showAllBiomes, boolean showFoundBiomes) {
         if (showAllBiomes) {
-            var components = new ArrayList<Component>();
-
-            for (var biome : finder.getPossibleBiomes()) {
-                var biomeKey = NMSUtils.toBiomeKey(biome);
-
-                if (biomeKey == null) {
-                    continue;
-                }
-
-                if (finder.getFoundBiomes().contains(biome)) {
-                    components.add(FOUND_BIOME.apply(biomeKey));
-                } else {
-                    components.add(NOT_FOUND_BIOME.apply(biomeKey));
-                }
-            }
-
-            sender.sendMessage(ALL_BIOME_LIST_HEADER);
-            sender.sendMessage(ALL_BIOME_LIST.apply(components));
-            return;
-        }
-
-        Collection<Biome> biomes;
-
-        if (showFoundBiomes) {
-            biomes = finder.getFoundBiomes();
+            showAllBiomes(sender, biomeSource, foundBiomes);
+        } else if (showFoundBiomes) {
+            showBiomes(sender, DISCOVERED_BIOMES, foundBiomes.stream());
         } else {
-            var tempList = new ArrayList<>(finder.getPossibleBiomes());
-
-            for (var found : finder.getFoundBiomes()) {
-                tempList.remove(found);
-            }
-
-            biomes = tempList;
+            showBiomes(sender, UNDISCOVERED_BIOMES, biomeSource.getPossibleBiomes().filter(Predicate.not(foundBiomes::contains)));
         }
-
-        sender.sendMessage(showFoundBiomes ? DISCOVERED_BIOMES : UNDISCOVERED_BIOMES);
-
-        var biomeKeys =
-                biomes.stream()
-                        .map(NMSUtils::toBiomeKey)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-
-        sender.sendMessage(BIOME_LIST.apply(biomeKeys));
     }
 
+    private static void showAllBiomes(@NotNull CommandSender sender, @NotNull BiomeSource biomeSource, @NotNull Set<Key> foundBiomes) {
+        var biomes = biomeSource.getPossibleBiomes().map(biome -> {
+            if (foundBiomes.contains(biome)) {
+                return FOUND_BIOME.apply(biome.asString());
+            } else {
+                return NOT_FOUND_BIOME.apply(biome.asString());
+            }
+        }).toList();
+
+        sender.sendMessage(ALL_BIOME_LIST_HEADER);
+        sender.sendMessage(ALL_BIOME_LIST.apply(biomes));
+    }
+
+    private static void showBiomes(@NotNull CommandSender sender, @NotNull Component header, @NotNull Stream<Key> biomeKeyStream) {
+        sender.sendMessage(header);
+        sender.sendMessage(BIOME_LIST.apply(biomeKeyStream.map(Key::asString).toList()));
+    }
 
     private @NotNull CommandContext parseArgument(@NotNull CommandSender sender, @NotNull String[] args) {
         Long seed = null;
-        NMSUtils.Dimension dimension = NMSUtils.Dimension.OVERWORLD;
+        Dimension dimension = null;
         boolean large = false;
         int radius = 500;
         Integer centerX = null, centerZ = null;
@@ -179,7 +154,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
                                         centerZ = world.getSpawnLocation().getBlockZ();
                                     }
 
-                                    dimension = world.getEnvironment() != World.Environment.NETHER ? NMSUtils.Dimension.OVERWORLD : NMSUtils.Dimension.NETHER;
+                                    dimension = Dimension.fromBukkit(world.getEnvironment());
                                 }
 
                                 yield null;
@@ -192,9 +167,9 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
                     case SEED -> seed = parseToSeed(arg);
                     case DIMENSION -> {
                         if (arg.equalsIgnoreCase("overworld")) {
-                            dimension = NMSUtils.Dimension.OVERWORLD;
+                            dimension = Dimension.OVERWORLD;
                         } else if (arg.equalsIgnoreCase("nether")) {
-                            dimension = NMSUtils.Dimension.NETHER;
+                            dimension = Dimension.NETHER;
                         }
                     }
                     case RADIUS -> radius = parseInt(arg, 500);
@@ -218,6 +193,10 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
         if (seed == null) {
             seed = new Random().nextLong();
+        }
+
+        if (dimension == null) {
+            dimension = Dimension.OVERWORLD;
         }
 
         if (centerX == null) {
