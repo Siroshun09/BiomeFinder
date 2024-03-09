@@ -1,6 +1,6 @@
 package com.github.siroshun09.biomefinder.wrapper.biome;
 
-import com.github.siroshun09.biomefinder.util.NMSUtils;
+import com.github.siroshun09.biomefinder.wrapper.registry.RegistryAccessor;
 import net.kyori.adventure.key.Key;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
@@ -15,8 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.stream.Stream;
-
-import static com.github.siroshun09.biomefinder.util.NMSUtils.getRegistryAccess;
 
 public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
 
@@ -33,7 +31,7 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
     }
 
     private static MultiNoiseBiomeSourceWrapper create(ResourceKey<MultiNoiseBiomeSourceParameterList> parameterListKey, ResourceKey<NoiseGeneratorSettings> noiseGeneratorSettingsKey, long seed) {
-        var registry = getRegistryAccess();
+        var registry = RegistryAccessor.registry();
         return new MultiNoiseBiomeSourceWrapper(
                 MultiNoiseBiomeSource.createFromPreset(
                         registry.registryOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST).getHolderOrThrow(parameterListKey)
@@ -57,11 +55,11 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
     @Override
     public @Nullable Key getBiome(int x, int y, int z) {
         var biome = this.biomeSource.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), this.randomState.sampler());
-        return NMSUtils.toBiomeKey(biome.value());
+        return BiomeToKey.convert(biome.value());
     }
 
     @Override
     public @NotNull Stream<Key> getPossibleBiomes() {
-        return this.biomeSource.possibleBiomes().stream().map(Holder::value).map(NMSUtils::toBiomeKey);
+        return this.biomeSource.possibleBiomes().stream().map(Holder::value).map(BiomeToKey::convert);
     }
 }
