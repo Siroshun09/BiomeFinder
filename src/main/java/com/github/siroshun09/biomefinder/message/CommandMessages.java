@@ -1,7 +1,7 @@
 package com.github.siroshun09.biomefinder.message;
 
 import com.github.siroshun09.biomefinder.command.CommandContext;
-import com.github.siroshun09.translationloader.argument.SingleArgument;
+import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -50,7 +50,7 @@ public final class CommandMessages {
                     .append(gray("Example 3: ").append(aqua("/fb -w world -l")))
                     .build();
 
-    public static final SingleArgument<String> ERROR_NO_PERMISSION =
+    public static final Function<String, Component> ERROR_NO_PERMISSION =
             permission ->
                     text().append(red("You don't have the permission"))
                             .append(gray(": "))
@@ -59,7 +59,7 @@ public final class CommandMessages {
 
     public static final Component ERROR_ALREADY_RUNNING = red("The biome search task is already running.");
 
-    public static final SingleArgument<CommandContext> COMMAND_CONTEXT =
+    public static final Function<CommandContext, Component> COMMAND_CONTEXT =
             context ->
                     text().append(gray("Seed: ").append(seed(context.seed())))
                             .append(newline())
@@ -74,7 +74,7 @@ public final class CommandMessages {
 
     public static final Component START_SEARCHING = gray("Searching for biomes...");
 
-    public static final SingleArgument<Stopwatch> FINISH_SEARCHING =
+    public static final Function<Stopwatch, Component> FINISH_SEARCHING =
             stopwatch ->
                     text().append(gray("Done! ("))
                             .append(aqua(stopwatch.elapsed(TimeUnit.MILLISECONDS)))
@@ -86,7 +86,7 @@ public final class CommandMessages {
 
     public static final Component UNDISCOVERED_BIOMES = gray("Undiscovered biomes:");
 
-    public static final SingleArgument<List<String>> BIOME_LIST =
+    public static final Function<List<String>, Component> BIOME_LIST =
             biomeKeys -> {
                 var components =
                         biomeKeys.stream()
@@ -105,21 +105,21 @@ public final class CommandMessages {
                     .append(red("not found"))
                     .append(gray(")"));
 
-    public static final SingleArgument<List<Component>> ALL_BIOME_LIST =
+    public static final Function<List<Component>, Component> ALL_BIOME_LIST =
             biomes -> join(JoinConfiguration.separator(gray(", ")), biomes);
 
-    public static final SingleArgument<String> FOUND_BIOME = biomeKey -> biome(biomeKey, AQUA);
+    public static final Function<String, Component> FOUND_BIOME = biomeKey -> biome(biomeKey, AQUA);
 
-    public static final SingleArgument<String> NOT_FOUND_BIOME = biomeKey -> biome(biomeKey, RED);
+    public static final Function<String, Component> NOT_FOUND_BIOME = biomeKey -> biome(biomeKey, RED);
 
     public static final Component GENERATE_SEED_HELP = gray("/generateseed {biome name} (alias: /gs)");
 
-    public static final SingleArgument<String> INVALID_BIOME = invalid -> red("Invalid biome: ").append(aqua(invalid));
+    public static final Function<String, Component> INVALID_BIOME = invalid -> red("Invalid biome: ").append(aqua(invalid));
 
-    public static final SingleArgument<Key> START_GENERATING_SEED =
+    public static final Function<Key, Component> START_GENERATING_SEED =
             spawnBiome -> gray("Generating seed with fixed spawn biome: ").append(biome(spawnBiome.asString(), AQUA));
 
-    public static final SingleArgument<Long> GENERATED_SEED =
+    public static final Function<Long, Component> GENERATED_SEED =
             seed -> gray("Generated seed (-1 means that the seed is not found, try again): ").append(seed(seed));
 
     public static final Component SEED_NOT_FOUND = red("The seed is not found. Try again or change the spawn biome.");
