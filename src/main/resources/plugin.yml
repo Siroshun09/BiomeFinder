@@ -2,7 +2,7 @@ name: BiomeFinder
 version: "${projectVersion}"
 main: com.github.siroshun09.biomefinder.BiomeFinderPlugin
 author: Siroshun09
-api-version: "1.20"
+api-version: "1.20.5"
 folia-supported: true
 commands:
   findbiomes:

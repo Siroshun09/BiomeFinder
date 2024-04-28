@@ -1,16 +1,16 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.5.15"
+    id("io.papermc.paperweight.userdev") version "1.6.2"
 }
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.9"
-val mcVersion = "1.20.4"
+val mcVersion = "1.20.5"
 val fullVersion = "${version}-mc${mcVersion}"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -21,24 +21,21 @@ dependencies {
     paperweight.paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
 }
 
-tasks {
-    build {
-        dependsOn(reobfJar)
-        doLast {
-            val jarFile = project.layout.buildDirectory.dir("libs").get().file("BiomeFinder-${fullVersion}.jar").asFile
-            jarFile.delete()
-            reobfJar.flatMap { it.outputJar.asFile }.get().copyTo(jarFile)
-        }
-    }
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
 
+tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-        options.release.set(17)
+        options.release.set(21)
     }
 
     processResources {
         filesMatching(listOf("plugin.yml")) {
             expand("projectVersion" to fullVersion)
         }
+    }
+
+    jar {
+        archiveFileName = "BiomeFinder-${fullVersion}.jar"
     }
 }
