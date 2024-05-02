@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "1.6.3"
+    id("io.papermc.paperweight.userdev") version "1.7.0"
 }
 
 group = "com.github.siroshun09.biomefinder"
