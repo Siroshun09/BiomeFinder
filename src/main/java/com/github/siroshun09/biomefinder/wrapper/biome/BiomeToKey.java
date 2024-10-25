@@ -11,7 +11,7 @@ public final class BiomeToKey {
 
     @SuppressWarnings("PatternValidation")
     public static @Nullable Key convert(@NotNull Biome biome) {
-        var key = RegistryAccessor.registry().registryOrThrow(Registries.BIOME).getKey(biome);
+        var key = RegistryAccessor.registry().lookupOrThrow(Registries.BIOME).getKey(biome);
         return key != null ? Key.key(key.getNamespace(), key.getPath()) : null;
     }
 
