@@ -7,19 +7,12 @@ import com.google.common.base.Stopwatch;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -37,16 +30,12 @@ import static com.github.siroshun09.biomefinder.message.CommandMessages.UNDISCOV
 
 public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
-    public FindBiomesCommand(@NotNull Executor executor) {
-        super("biomefinder.command.findbiomes", executor);
+    public FindBiomesCommand() {
+        super("biomefinder.command.findbiomes", FIND_BIOMES_HELP);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!preProcess(sender, args, FIND_BIOMES_HELP)) {
-            return true;
-        }
-
+    protected void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
         var context = parseArgument(sender, args);
 
         sender.sendMessage(COMMAND_CONTEXT.apply(context));
@@ -58,21 +47,10 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         sender.sendMessage(START_SEARCHING);
 
         var stopwatch = Stopwatch.createStarted();
+        mapWalker.walk(context.center(), context.radius(), 16);
+        sendResult(sender, biomeSource, foundBiomes, context.showAllBiomes(), context.showDiscoveredBiomes());
 
-        var executor = getExecutor();
-        setCurrentTask(
-                CompletableFuture.runAsync(() -> mapWalker.walk(context.center(), context.radius(), 16), executor)
-                        .thenRunAsync(() -> sendResult(sender, biomeSource, foundBiomes, context.showAllBiomes(), context.showDiscoveredBiomes()), executor)
-                        .thenRunAsync(() -> sender.sendMessage(FINISH_SEARCHING.apply(stopwatch)), executor)
-                        .thenRunAsync(() -> setCurrentTask(null))
-        );
-
-        return true;
-    }
-
-    @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        return Collections.emptyList();
+        sender.sendMessage(FINISH_SEARCHING.apply(stopwatch.stop()));
     }
 
     private void sendResult(@NotNull CommandSender sender, @NotNull BiomeSource biomeSource, @NotNull Set<Key> foundBiomes,
