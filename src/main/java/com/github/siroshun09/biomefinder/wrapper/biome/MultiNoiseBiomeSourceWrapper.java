@@ -34,14 +34,14 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
     private static MultiNoiseBiomeSourceWrapper create(ResourceKey<MultiNoiseBiomeSourceParameterList> parameterListKey, ResourceKey<NoiseGeneratorSettings> noiseGeneratorSettingsKey, long seed) {
         var registry = RegistryAccessor.registry();
         return new MultiNoiseBiomeSourceWrapper(
-                MultiNoiseBiomeSource.createFromPreset(
-                        registry.lookupOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST).getOrThrow(parameterListKey)
-                ),
-                RandomState.create(
-                        registry.lookupOrThrow(Registries.NOISE_SETTINGS).getOrThrow(noiseGeneratorSettingsKey).value(),
-                        registry.lookupOrThrow(Registries.NOISE),
-                        seed
-                )
+            MultiNoiseBiomeSource.createFromPreset(
+                registry.lookupOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST).getOrThrow(parameterListKey)
+            ),
+            RandomState.create(
+                registry.lookupOrThrow(Registries.NOISE_SETTINGS).getOrThrow(noiseGeneratorSettingsKey).value(),
+                registry.lookupOrThrow(Registries.NOISE),
+                seed
+            )
         );
     }
 

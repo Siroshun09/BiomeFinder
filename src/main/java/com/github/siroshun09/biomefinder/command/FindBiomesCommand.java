@@ -37,7 +37,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    protected void run(CommandSender sender, String [] args) {
+    protected void run(CommandSender sender, String[] args) {
         var context = this.parseArgument(sender, args);
 
         sender.sendMessage(COMMAND_CONTEXT.apply(context));
@@ -98,50 +98,50 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         for (var arg : args) {
             if (argumentType == null) {
                 argumentType =
-                        switch (arg) {
-                            case "-s", "--seed" -> ArgumentType.SEED;
-                            case "-d", "--dimension" -> ArgumentType.DIMENSION;
-                            case "-l", "--large" -> {
-                                large = true;
-                                yield null;
+                    switch (arg) {
+                        case "-s", "--seed" -> ArgumentType.SEED;
+                        case "-d", "--dimension" -> ArgumentType.DIMENSION;
+                        case "-l", "--large" -> {
+                            large = true;
+                            yield null;
+                        }
+                        case "-r", "--radius" -> ArgumentType.RADIUS;
+                        case "-x", "--center-x" -> ArgumentType.X;
+                        case "-z", "--center-z" -> ArgumentType.Z;
+                        case "-sab", "--show-all-biomes" -> {
+                            showAllBiomes = true;
+                            yield null;
+                        }
+                        case "-sdb", "--show-discovered-biomes" -> ArgumentType.SHOW_DISCOVERED_BIOMES;
+                        case "-cl", "--current-location" -> {
+                            if (sender instanceof Player player) {
+                                centerX = player.getLocation().getBlockX();
+                                centerZ = player.getLocation().getBlockZ();
                             }
-                            case "-r", "--radius" -> ArgumentType.RADIUS;
-                            case "-x", "--center-x" -> ArgumentType.X;
-                            case "-z", "--center-z" -> ArgumentType.Z;
-                            case "-sab", "--show-all-biomes" -> {
-                                showAllBiomes = true;
-                                yield null;
-                            }
-                            case "-sdb", "--show-discovered-biomes" -> ArgumentType.SHOW_DISCOVERED_BIOMES;
-                            case "-cl", "--current-location" -> {
-                                if (sender instanceof Player player) {
-                                    centerX = player.getLocation().getBlockX();
-                                    centerZ = player.getLocation().getBlockZ();
+
+                            yield null;
+                        }
+                        case "-cw", "--current-world" -> {
+                            if (sender instanceof Player player) {
+                                var world = player.getWorld();
+                                seed = world.getSeed();
+
+                                if (centerX == null) {
+                                    centerX = world.getSpawnLocation().getBlockX();
                                 }
 
-                                yield null;
-                            }
-                            case "-cw", "--current-world" -> {
-                                if (sender instanceof Player player) {
-                                    var world = player.getWorld();
-                                    seed = world.getSeed();
-
-                                    if (centerX == null) {
-                                        centerX = world.getSpawnLocation().getBlockX();
-                                    }
-
-                                    if (centerZ == null) {
-                                        centerZ = world.getSpawnLocation().getBlockZ();
-                                    }
-
-                                    dimension = Dimension.fromBukkit(world.getEnvironment());
+                                if (centerZ == null) {
+                                    centerZ = world.getSpawnLocation().getBlockZ();
                                 }
 
-                                yield null;
+                                dimension = Dimension.fromBukkit(world.getEnvironment());
                             }
-                            case "-w", "--world" -> ArgumentType.WORLD;
-                            default -> null;
-                        };
+
+                            yield null;
+                        }
+                        case "-w", "--world" -> ArgumentType.WORLD;
+                        default -> null;
+                    };
             } else {
                 switch (argumentType) {
                     case SEED -> seed = this.parseToSeed(arg);
@@ -188,9 +188,9 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         }
 
         return new CommandContext(
-                seed, dimension, large,
-                Math.abs(radius), centerX, centerZ,
-                showAllBiomes, showDiscoveredBiomes
+            seed, dimension, large,
+            Math.abs(radius), centerX, centerZ,
+            showAllBiomes, showDiscoveredBiomes
         );
     }
 

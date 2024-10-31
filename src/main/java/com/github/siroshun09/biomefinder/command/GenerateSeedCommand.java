@@ -28,7 +28,7 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    protected void run(CommandSender sender, String [] args) {
+    protected void run(CommandSender sender, String[] args) {
         Key key;
 
         if (args.length != 0) {
@@ -55,15 +55,15 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    public Collection<String> suggest(CommandSourceStack source, String [] args) {
+    public Collection<String> suggest(CommandSourceStack source, String[] args) {
         if (args.length != 1 || !source.getSender().hasPermission(PERMISSION)) {
             return Collections.emptyList();
         }
 
         return Registry.BIOME.stream()
-                .map(Biome::getKey)
-                .filter(key -> key.asString().startsWith(args[0]) || key.asMinimalString().startsWith(args[0]))
-                .map(Key::asString)
-                .toList();
+            .map(Biome::getKey)
+            .filter(key -> key.asString().startsWith(args[0]) || key.asMinimalString().startsWith(args[0]))
+            .map(Key::asString)
+            .toList();
     }
 }

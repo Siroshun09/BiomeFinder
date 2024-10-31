@@ -27,7 +27,7 @@ public abstract class AbstractBiomeFinderCommand implements BasicCommand {
     }
 
     @Override
-    public void execute(CommandSourceStack source, String [] args) {
+    public void execute(CommandSourceStack source, String[] args) {
         var sender = source.getSender();
 
         if (!sender.hasPermission(this.permission)) {
@@ -46,16 +46,16 @@ public abstract class AbstractBiomeFinderCommand implements BasicCommand {
         }
 
         Bukkit.getAsyncScheduler().runNow(
-                JavaPlugin.getPlugin(BiomeFinderPlugin.class),
-                ignored -> {
-                    try {
-                        this.run(sender, args);
-                    } finally {
-                        this.isRunning.set(false);
-                    }
+            JavaPlugin.getPlugin(BiomeFinderPlugin.class),
+            ignored -> {
+                try {
+                    this.run(sender, args);
+                } finally {
+                    this.isRunning.set(false);
                 }
+            }
         );
     }
 
-    protected abstract void run(CommandSender sender, String [] args);
+    protected abstract void run(CommandSender sender, String[] args);
 }
