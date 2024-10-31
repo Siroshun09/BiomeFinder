@@ -8,7 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +25,7 @@ import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static net.kyori.adventure.text.format.NamedTextColor.WHITE;
 
+@NullMarked
 public final class CommandMessages {
 
     public static final Component FIND_BIOMES_HELP =
@@ -124,8 +125,7 @@ public final class CommandMessages {
 
     public static final Component SEED_NOT_FOUND = red("The seed is not found. Try again or change the spawn biome.");
 
-    private static @NotNull Component argument(@NotNull String shortArg, @NotNull String arg,
-                                               @NotNull String value, @NotNull String description) {
+    private static Component argument(String shortArg, String arg, String value, String description) {
         var builder = text()
                 .append(space())
                 .append(aqua(shortArg))
@@ -140,40 +140,40 @@ public final class CommandMessages {
         return builder.build();
     }
 
-    private static @NotNull Component gray(@NotNull String str) {
+    private static Component gray(String str) {
         return text(str, GRAY);
     }
 
-    private static @NotNull Component red(@NotNull String str) {
+    private static Component red(String str) {
         return text(str, RED);
     }
 
-    private static @NotNull Component aqua(@NotNull String str) {
+    private static Component aqua(String str) {
         return text(str, AQUA);
     }
 
-    private static @NotNull Component aqua(long num) {
+    private static Component aqua(long num) {
         return text(num, AQUA);
     }
 
-    private static @NotNull Component aqua(boolean bool) {
+    private static Component aqua(boolean bool) {
         return text(bool, AQUA);
     }
 
-    private static @NotNull Component white(@NotNull String str) {
+    private static Component white(String str) {
         return text(str, WHITE);
     }
 
-    private static @NotNull String toBiomeTranslationKey(@NotNull String biomeKey) {
+    private static String toBiomeTranslationKey(String biomeKey) {
         return "biome." + biomeKey.replace(':', '.');
     }
 
-    private static @NotNull Component biome(@NotNull String biomeKey, @NotNull TextColor color) {
+    private static Component biome(String biomeKey, TextColor color) {
         return translatable(toBiomeTranslationKey(biomeKey), color)
                 .hoverEvent(HoverEvent.showText(white(biomeKey)));
     }
 
-    private static @NotNull Component seed(long seed) {
+    private static Component seed(long seed) {
         return aqua(seed)
                 .clickEvent(copyToClipboard(Long.toString(seed)))
                 .hoverEvent(HoverEvent.showText(white("Click to copy")));

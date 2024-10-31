@@ -9,7 +9,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -28,6 +29,7 @@ import static com.github.siroshun09.biomefinder.message.CommandMessages.NOT_FOUN
 import static com.github.siroshun09.biomefinder.message.CommandMessages.START_SEARCHING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.UNDISCOVERED_BIOMES;
 
+@NullMarked
 public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
     public FindBiomesCommand() {
@@ -35,7 +37,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    protected void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    protected void run(CommandSender sender, String [] args) {
         var context = parseArgument(sender, args);
 
         sender.sendMessage(COMMAND_CONTEXT.apply(context));
@@ -53,7 +55,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         sender.sendMessage(FINISH_SEARCHING.apply(stopwatch.stop()));
     }
 
-    private void sendResult(@NotNull CommandSender sender, @NotNull BiomeSource biomeSource, @NotNull Set<Key> foundBiomes,
+    private void sendResult(CommandSender sender, BiomeSource biomeSource, Set<Key> foundBiomes,
                             boolean showAllBiomes, boolean showFoundBiomes) {
         if (showAllBiomes) {
             showAllBiomes(sender, biomeSource, foundBiomes);
@@ -64,7 +66,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         }
     }
 
-    private static void showAllBiomes(@NotNull CommandSender sender, @NotNull BiomeSource biomeSource, @NotNull Set<Key> foundBiomes) {
+    private static void showAllBiomes(CommandSender sender, BiomeSource biomeSource, Set<Key> foundBiomes) {
         var biomes = biomeSource.getPossibleBiomes().map(biome -> {
             if (foundBiomes.contains(biome)) {
                 return FOUND_BIOME.apply(biome.asString());
@@ -77,12 +79,12 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         sender.sendMessage(ALL_BIOME_LIST.apply(biomes));
     }
 
-    private static void showBiomes(@NotNull CommandSender sender, @NotNull Component header, @NotNull Stream<Key> biomeKeyStream) {
+    private static void showBiomes(CommandSender sender, Component header, Stream<Key> biomeKeyStream) {
         sender.sendMessage(header);
         sender.sendMessage(BIOME_LIST.apply(biomeKeyStream.map(Key::asString).toList()));
     }
 
-    private @NotNull CommandContext parseArgument(@NotNull CommandSender sender, @NotNull String[] args) {
+    private CommandContext parseArgument(CommandSender sender, String[] args) {
         Long seed = null;
         Dimension dimension = null;
         boolean large = false;
@@ -192,7 +194,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         );
     }
 
-    private int parseInt(@NotNull String original, int def) {
+    private int parseInt(String original, int def) {
         try {
             return Integer.parseInt(original);
         } catch (NumberFormatException e) {
@@ -200,7 +202,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
         }
     }
 
-    private long parseToSeed(@NotNull String original) {
+    private long parseToSeed(String original) {
         try {
             return Long.parseLong(original);
         } catch (NumberFormatException ignored) {

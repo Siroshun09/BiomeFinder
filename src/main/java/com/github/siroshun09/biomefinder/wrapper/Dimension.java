@@ -1,7 +1,7 @@
 package com.github.siroshun09.biomefinder.wrapper;
 
 import org.bukkit.World;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public enum Dimension {
 

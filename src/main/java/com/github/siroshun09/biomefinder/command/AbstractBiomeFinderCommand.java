@@ -7,26 +7,27 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_ALREADY_RUNNING;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.ERROR_NO_PERMISSION;
 
+@NullMarked
 public abstract class AbstractBiomeFinderCommand implements BasicCommand {
 
     private final String permission;
     private final Component help;
     private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
-    protected AbstractBiomeFinderCommand(@NotNull String permission, @NotNull Component help) {
+    protected AbstractBiomeFinderCommand(String permission, Component help) {
         this.permission = permission;
         this.help = help;
     }
 
     @Override
-    public void execute(@NotNull CommandSourceStack source, @NotNull String @NotNull [] args) {
+    public void execute(CommandSourceStack source, String [] args) {
         var sender = source.getSender();
 
         if (!sender.hasPermission(permission)) {
@@ -56,5 +57,5 @@ public abstract class AbstractBiomeFinderCommand implements BasicCommand {
         );
     }
 
-    protected abstract void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args);
+    protected abstract void run(CommandSender sender, String [] args);
 }

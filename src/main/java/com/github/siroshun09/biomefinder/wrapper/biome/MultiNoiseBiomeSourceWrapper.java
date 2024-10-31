@@ -11,11 +11,12 @@ import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterList;
 import net.minecraft.world.level.biome.MultiNoiseBiomeSourceParameterLists;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.RandomState;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.stream.Stream;
 
+@NullMarked
 public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
 
     public static MultiNoiseBiomeSourceWrapper overworld(long seed) {
@@ -47,7 +48,7 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
     private final MultiNoiseBiomeSource biomeSource;
     private final RandomState randomState;
 
-    private MultiNoiseBiomeSourceWrapper(@NotNull MultiNoiseBiomeSource biomeSource, @NotNull RandomState randomState) {
+    private MultiNoiseBiomeSourceWrapper(MultiNoiseBiomeSource biomeSource, RandomState randomState) {
         this.biomeSource = biomeSource;
         this.randomState = randomState;
     }
@@ -59,7 +60,7 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
     }
 
     @Override
-    public @NotNull Stream<Key> getPossibleBiomes() {
+    public Stream<Key> getPossibleBiomes() {
         return this.biomeSource.possibleBiomes().stream().map(Holder::value).map(BiomeToKey::convert);
     }
 }

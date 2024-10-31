@@ -2,11 +2,12 @@ package com.github.siroshun09.biomefinder.wrapper.registry;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.MinecraftServer;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class RegistryAccessor {
 
-    public static @NotNull RegistryAccess.Frozen registry() {
+    public static RegistryAccess.Frozen registry() {
         return MinecraftServer.getServer().registryAccess();
     }
 

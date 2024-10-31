@@ -7,7 +7,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +18,7 @@ import static com.github.siroshun09.biomefinder.message.CommandMessages.INVALID_
 import static com.github.siroshun09.biomefinder.message.CommandMessages.SEED_NOT_FOUND;
 import static com.github.siroshun09.biomefinder.message.CommandMessages.START_GENERATING_SEED;
 
+@NullMarked
 public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
 
     private static final String PERMISSION = "biomefinder.command";
@@ -27,7 +28,7 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    protected void run(@NotNull CommandSender sender, @NotNull String @NotNull [] args) {
+    protected void run(CommandSender sender, String [] args) {
         Key key;
 
         if (args.length != 0) {
@@ -54,7 +55,7 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
     }
 
     @Override
-    public @NotNull Collection<String> suggest(@NotNull CommandSourceStack source, String @NotNull [] args) {
+    public Collection<String> suggest(CommandSourceStack source, String [] args) {
         if (args.length != 1 || !source.getSender().hasPermission(PERMISSION)) {
             return Collections.emptyList();
         }

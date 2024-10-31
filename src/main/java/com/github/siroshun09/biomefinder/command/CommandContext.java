@@ -4,13 +4,14 @@ import com.github.siroshun09.biomefinder.wrapper.BlockPos;
 import com.github.siroshun09.biomefinder.wrapper.Dimension;
 import com.github.siroshun09.biomefinder.wrapper.biome.BiomeSource;
 import com.github.siroshun09.biomefinder.wrapper.biome.MultiNoiseBiomeSourceWrapper;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public record CommandContext(long seed, Dimension dimension, boolean large,
                              int radius, int centerX, int centerZ,
                              boolean showAllBiomes, boolean showDiscoveredBiomes) {
 
-    public @NotNull BiomeSource createBiomeSource() {
+    public BiomeSource createBiomeSource() {
         return switch (this.dimension) {
             case OVERWORLD -> {
                 if (this.large) {
@@ -23,7 +24,7 @@ public record CommandContext(long seed, Dimension dimension, boolean large,
         };
     }
 
-    public @NotNull BlockPos center() {
+    public BlockPos center() {
         return new BlockPos(this.centerX, 64, this.centerZ);
     }
 }
