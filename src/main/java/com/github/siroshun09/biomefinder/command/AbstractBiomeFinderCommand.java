@@ -30,17 +30,17 @@ public abstract class AbstractBiomeFinderCommand implements BasicCommand {
     public void execute(CommandSourceStack source, String [] args) {
         var sender = source.getSender();
 
-        if (!sender.hasPermission(permission)) {
-            sender.sendMessage(ERROR_NO_PERMISSION.apply(permission));
+        if (!sender.hasPermission(this.permission)) {
+            sender.sendMessage(ERROR_NO_PERMISSION.apply(this.permission));
             return;
         }
 
         if (0 < args.length && args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage(help);
+            sender.sendMessage(this.help);
             return;
         }
 
-        if (isRunning.compareAndExchange(false, true)) {
+        if (this.isRunning.compareAndExchange(false, true)) {
             sender.sendMessage(ERROR_ALREADY_RUNNING);
             return;
         }
@@ -49,9 +49,9 @@ public abstract class AbstractBiomeFinderCommand implements BasicCommand {
                 JavaPlugin.getPlugin(BiomeFinderPlugin.class),
                 ignored -> {
                     try {
-                        run(sender, args);
+                        this.run(sender, args);
                     } finally {
-                        isRunning.set(false);
+                        this.isRunning.set(false);
                     }
                 }
         );

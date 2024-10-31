@@ -38,7 +38,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
     @Override
     protected void run(CommandSender sender, String [] args) {
-        var context = parseArgument(sender, args);
+        var context = this.parseArgument(sender, args);
 
         sender.sendMessage(COMMAND_CONTEXT.apply(context));
 
@@ -50,7 +50,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
 
         var stopwatch = Stopwatch.createStarted();
         mapWalker.walk(context.center(), context.radius(), 16);
-        sendResult(sender, biomeSource, foundBiomes, context.showAllBiomes(), context.showDiscoveredBiomes());
+        this.sendResult(sender, biomeSource, foundBiomes, context.showAllBiomes(), context.showDiscoveredBiomes());
 
         sender.sendMessage(FINISH_SEARCHING.apply(stopwatch.stop()));
     }
@@ -144,7 +144,7 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
                         };
             } else {
                 switch (argumentType) {
-                    case SEED -> seed = parseToSeed(arg);
+                    case SEED -> seed = this.parseToSeed(arg);
                     case DIMENSION -> {
                         if (arg.equalsIgnoreCase("overworld")) {
                             dimension = Dimension.OVERWORLD;
@@ -152,9 +152,9 @@ public class FindBiomesCommand extends AbstractBiomeFinderCommand {
                             dimension = Dimension.NETHER;
                         }
                     }
-                    case RADIUS -> radius = parseInt(arg, 500);
-                    case X -> centerX = parseInt(arg, 0);
-                    case Z -> centerZ = parseInt(arg, 0);
+                    case RADIUS -> radius = this.parseInt(arg, 500);
+                    case X -> centerX = this.parseInt(arg, 0);
+                    case Z -> centerZ = this.parseInt(arg, 0);
                     case SHOW_DISCOVERED_BIOMES -> showDiscoveredBiomes = Boolean.parseBoolean(arg);
                     case WORLD -> {
                         var world = Bukkit.getWorld(arg);
