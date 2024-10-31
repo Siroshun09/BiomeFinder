@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "1.7.4"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.github.siroshun09.biomefinder"
@@ -37,5 +38,11 @@ tasks {
 
     jar {
         archiveFileName = "BiomeFinder-${fullVersion}.jar"
+    }
+
+    runServer {
+        minecraftVersion(mcVersion)
+        systemProperty("com.mojang.eula.agree", "true")
+        systemProperty("paper.disablePluginRemapping", "true")
     }
 }
