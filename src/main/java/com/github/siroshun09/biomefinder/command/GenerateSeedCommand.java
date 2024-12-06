@@ -2,9 +2,10 @@ package com.github.siroshun09.biomefinder.command;
 
 import com.github.siroshun09.biomefinder.util.SeedGenerator;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import net.kyori.adventure.key.Key;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
@@ -43,7 +44,7 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
             key = Key.key("minecraft:plains");
         }
 
-        if (Registry.BIOME.get(new NamespacedKey(key.namespace(), key.value())) == null) {
+        if (RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME).get(new NamespacedKey(key.namespace(), key.value())) == null) {
             sender.sendMessage(INVALID_BIOME.apply(key.asString()));
             return;
         }
@@ -60,7 +61,9 @@ public class GenerateSeedCommand extends AbstractBiomeFinderCommand {
             return Collections.emptyList();
         }
 
-        return Registry.BIOME.stream()
+        return RegistryAccess.registryAccess()
+            .getRegistry(RegistryKey.BIOME)
+            .stream()
             .map(Biome::getKey)
             .filter(key -> key.asString().startsWith(args[0]) || key.asMinimalString().startsWith(args[0]))
             .map(Key::asString)
