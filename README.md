@@ -56,4 +56,4 @@ TIP: The search process is asynchronous, so it generally does not stop the serve
 
 This project is under the GPL-3.0 license. Please see LICENSE for more info.
 
-Copyright © 2020-2024, Siroshun09
+Copyright © 2020-2025, Siroshun09
