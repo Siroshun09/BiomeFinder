@@ -1,12 +1,12 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.16"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.17"
     id("xyz.jpenilla.run-paper") version "2.3.1"
 }
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.10"
-val mcVersion = "1.21.4"
+val mcVersion = "1.21.5"
 val fullVersion = "${version}-mc${mcVersion}"
 
 java {
