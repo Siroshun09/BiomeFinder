@@ -13,7 +13,7 @@ public final class SeedGenerator {
 
     public static long generateSeedWithFixedSpawnBiome(Key key) {
         return generateSeedByCondition(source -> {
-            Key biomeKey = source.getBiome(0, 0, 0);
+            Key biomeKey = source.getBiome(0, 64, 0);
             return key.equals(biomeKey);
         }, false, 10000);
     }
