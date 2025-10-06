@@ -17,7 +17,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.stream.Stream;
 
 @NullMarked
-public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
+public record MultiNoiseBiomeSourceWrapper(MultiNoiseBiomeSource biomeSource, RandomState randomState) implements BiomeSource {
 
     public static MultiNoiseBiomeSourceWrapper overworld(long seed) {
         return create(MultiNoiseBiomeSourceParameterLists.OVERWORLD, NoiseGeneratorSettings.OVERWORLD, seed);
@@ -43,14 +43,6 @@ public class MultiNoiseBiomeSourceWrapper implements BiomeSource {
                 seed
             )
         );
-    }
-
-    private final MultiNoiseBiomeSource biomeSource;
-    private final RandomState randomState;
-
-    private MultiNoiseBiomeSourceWrapper(MultiNoiseBiomeSource biomeSource, RandomState randomState) {
-        this.biomeSource = biomeSource;
-        this.randomState = randomState;
     }
 
     @Override

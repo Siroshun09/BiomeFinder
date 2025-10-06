@@ -8,15 +8,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.function.BiConsumer;
 
 @NullMarked
-public final class MapWalker {
-
-    private final BiomeSource biomeSource;
-    private final BiConsumer<Key, BlockPos> biomeConsumer;
-
-    public MapWalker(BiomeSource biomeSource, BiConsumer<Key, BlockPos> biomeConsumer) {
-        this.biomeSource = biomeSource;
-        this.biomeConsumer = biomeConsumer;
-    }
+public record MapWalker(BiomeSource biomeSource, BiConsumer<Key, BlockPos> biomeConsumer) {
 
     public void walk(BlockPos center, int radius, int distance) {
         int minX = center.x() - radius;
@@ -35,4 +27,5 @@ public final class MapWalker {
             }
         }
     }
+
 }
