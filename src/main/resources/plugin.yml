@@ -2,5 +2,5 @@ name: BiomeFinder
 version: "${projectVersion}"
 main: com.github.siroshun09.biomefinder.BiomeFinderPlugin
 author: Siroshun09
-api-version: "1.21.3"
+api-version: "${minecraftVersion}"
 folia-supported: true

@@ -7,7 +7,7 @@ plugins {
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.11"
-val mcVersion = "1.21.10"
+val mcVersion = "1.21.11"
 val fullVersion = "${version}-mc${mcVersion}"
 
 dependencies {
@@ -23,7 +23,7 @@ jcommon {
 tasks {
     processResources {
         filesMatching(listOf("plugin.yml")) {
-            expand("projectVersion" to fullVersion)
+            expand("projectVersion" to fullVersion, "minecraftVersion" to mcVersion)
         }
     }
 
