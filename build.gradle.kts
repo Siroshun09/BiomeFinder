@@ -2,7 +2,7 @@ plugins {
     `java-library`
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
     id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("dev.siroshun.gradle.plugins.jcommon") version "1.6.1"
+    id("dev.siroshun.gradle.plugins.jcommon") version "1.7.0"
 }
 
 group = "com.github.siroshun09.biomefinder"
