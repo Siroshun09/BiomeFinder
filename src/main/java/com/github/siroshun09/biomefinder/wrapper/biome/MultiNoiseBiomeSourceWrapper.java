@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @NullMarked
@@ -53,6 +54,6 @@ public record MultiNoiseBiomeSourceWrapper(MultiNoiseBiomeSource biomeSource, Ra
 
     @Override
     public Stream<Key> getPossibleBiomes() {
-        return this.biomeSource.possibleBiomes().stream().map(Holder::value).map(BiomeToKey::convert);
+        return this.biomeSource.possibleBiomes().stream().map(Holder::value).map(BiomeToKey::convert).filter(Objects::nonNull);
     }
 }
