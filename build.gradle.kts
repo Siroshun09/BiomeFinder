@@ -11,7 +11,7 @@ val mcVersion = "26.1.1"
 val fullVersion = "${version}-mc${mcVersion}"
 
 dependencies {
-    paperweight.paperDevBundle("$mcVersion.build.+")
+    paperweight.paperDevBundle("26.1.1.build.9-alpha")
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
