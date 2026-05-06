@@ -1,17 +1,17 @@
 plugins {
     `java-library`
-    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
-    id("xyz.jpenilla.run-paper") version "3.0.2"
-    id("dev.siroshun.gradle.plugins.jcommon") version "1.8.3"
+    alias(libs.plugins.paperweight.userdev)
+    alias(libs.plugins.run.paper)
+    alias(libs.plugins.jcommon)
 }
 
 group = "com.github.siroshun09.biomefinder"
 version = "1.11"
-val mcVersion = "26.1.1"
+val mcVersion = libs.versions.paper.get().replaceAfter(".build", "").removeSuffix(".build")
 val fullVersion = "${version}-mc${mcVersion}"
 
 dependencies {
-    paperweight.paperDevBundle("26.1.1.build.9-alpha")
+    paperweight.paperDevBundle(libs.versions.paper.get())
 }
 
 paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
