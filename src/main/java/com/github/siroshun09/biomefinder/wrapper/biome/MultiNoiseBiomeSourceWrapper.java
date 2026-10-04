@@ -39,16 +39,17 @@ public record MultiNoiseBiomeSourceWrapper(MultiNoiseBiomeSource biomeSource, Ra
                 registry.lookupOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST).getOrThrow(parameterListKey)
             ),
             RandomState.create(
-                registry.lookupOrThrow(Registries.NOISE_SETTINGS).getOrThrow(noiseGeneratorSettingsKey).value(),
                 registry.lookupOrThrow(Registries.NOISE),
-                seed
+                seed,
+                registry.lookupOrThrow(Registries.NOISE_SETTINGS).getOrThrow(noiseGeneratorSettingsKey).value()
             )
         );
     }
 
     @Override
     public @Nullable Key getBiome(int x, int y, int z) {
-        var biome = this.biomeSource.getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), this.randomState.sampler());
+        var biome = this.biomeSource.createUncachedResolver(this.randomState)
+            .getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z));
         return BiomeToKey.convert(biome.value());
     }
 
